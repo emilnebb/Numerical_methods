@@ -1,4 +1,4 @@
-# Tallknuser
+# Numerical_methods
 
 Source code from school projects.
 
