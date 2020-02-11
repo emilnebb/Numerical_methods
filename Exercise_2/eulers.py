@@ -39,7 +39,7 @@ def eulers(x0,x1, h, y0, f):
 
 x0 = 0.0
 x1 = 1.5
-h = 0.1
+h = 0.01
 y0 = 0
 x,y = eulers(x0,x1,h, y0, f)
 
