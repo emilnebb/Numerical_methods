@@ -32,10 +32,11 @@ def secant(phi0,phi1,s0,s1):
         return 0.0
 
 def f(y, x):
-    yout = np.zeros_like(y)
-    yout[:] = [y[1],-2*x*y[0]**2]
+    yout = [y[1],-2*x*(y[1])**2]
     return yout
 
+#Task a )
+#--------------------
 #Declaring variables
 N = 90
 x = np.linspace(0, 0.9, N + 1)
@@ -52,11 +53,13 @@ y0[0] = 2
 y0[1] = s[0]
 
 y = rk4(f, y0, x)
+print(y)
 phi0 = y[-1,0] - yend
+print(phi0)
 y = y[:,0]
 
 nmax = 10
-eps = 0.000001
+eps = 0.01
 
 #Making initial plots
 plt.figure()
@@ -76,7 +79,9 @@ for i in range(nmax):
     s[1] +=  ds
     phi0 = phi1
     print('n = {}  s1 = {} and ds = {}'.format(i,s[1],ds))
-    plt.plot(x, y, linestyles[i + 1])
+    print(np.size(y))
+    print(np.size(x))
+    plt.plot(x, y, linestyles[i+1])
     legendList.append('it = {0}'.format(i + 1))
     
     if (abs(ds)<=eps):
@@ -89,5 +94,27 @@ plt.xlabel('x')
 plt.ylabel('y')
 plt.legend(legendList, frameon=False, loc='best')
 #plt.savefig('fig/Problem1_it.png', transparent=True)
+
+#plt.show()
+
+
+#Task b
+s_start, s_end = -0.5, -1.23
+sList = np.linspace(s_start, s_end, 51)
+phiList = np.zeros_like(sList)
+
+for n, s in enumerate(sList):
+    y0 = [2, s]
+    y = rk4(f, y0,x)
+    y_shoot = y[:,0]    # extract y, and not y'
+    phiList[n] =  y_shoot[-1] - yend
+    
+plt.figure()
+plt.plot(sList, phiList)
+plt.plot(sList, np.zeros_like(sList), 'k--')
+plt.xlim([s_start, s_end])
+plt.ylim([np.min(phiList), np.max(phiList)])
+plt.xlabel('s')
+plt.ylabel(r'$\phi$')
 
 plt.show()
