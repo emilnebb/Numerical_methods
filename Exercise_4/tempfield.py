@@ -115,7 +115,9 @@ Temp = np.zeros(np.size(b), float)
 for i in range(np.size(Temp)):
     Temp[i] = np.sum(Temptemp[i,:])
 
-print(Temp)
+#print(Temp)
 plotSurfaceNeumannDirichlet(Temp, 100, 50, 1, 50)
+
+#ploting a 50x50 temperature mesh
 
 
