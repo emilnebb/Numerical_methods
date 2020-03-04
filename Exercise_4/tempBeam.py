@@ -32,7 +32,7 @@ def tempfield(Tleft, Tright, T0, l, N, timeEnd):
                 A[j*N+ i-1 , j*N + i -2] = 2
             
             if ((i == 1)and(j == N-1)):     #if we are at the node next to the top left corner
-                b[j*N + i-1] = -(Tleft + Ttop)
+                b[j*N + i-1] = -(Tleft + Tright)
                 A[j*N + i-1,j*N + i] = 1
                 A[j*N + i-1,j*N + i-1 - N] = 1
             elif ((i == 1)and (j == 0 )):
@@ -45,11 +45,11 @@ def tempfield(Tleft, Tright, T0, l, N, timeEnd):
                 A[j*N + i-1,j*N + i-1 + N] = 1
                 A[j*N + i-1,j*N + i-1 - N] = 1
             elif ((j == N-1)and(i == N)):
-                b[j*N + i-1] = -Ttop            #if we are next to the top boundary
+                b[j*N + i-1] = -Tright            #if we are next to the top boundary
                 A[j*N + i-1,j*N + i-2] = 2
                 A[j*N + i-1,j*N + i-1 -N] = 1
             elif (j == N-1):
-                b[j*N + i-1] = -Ttop 
+                b[j*N + i-1] = -Tright 
                 A[j*N + i-1,j*N + i-2] = 1
                 A[j*N + i-1,j*N + i] = 1
                 A[j*N + i-1,j*N + i-1 -N] = 1
