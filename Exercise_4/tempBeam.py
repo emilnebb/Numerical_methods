@@ -7,53 +7,57 @@ from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 
-def tempfield(Tleft, Tright, T0, l, N, timeEnd):
+def tempBeam(Tleft, Tright, T0, L, deltaT, deltaX, endTime):
 
-    A = np.zeros((N*N,N*N), int)
-    b = np.zeros((N*N), int)
+    D = deltaT/deltaX**2
 
-    for j in range (0,N):
-        for i in range (1,N+1):
-            A[j*N + i-1,j*N + i-1] = -4                 #setting the diagonals to -4
+    #Checking if the FTCS will be stable or not:
+    print("Checking stability")
+    print("------------------")
 
-            if (i>1):
-                A[j*N + i-1, j*N + i -2] = 1
-            if (i<N):
-                A[j*N + i-1, j*N + i] = 1  
-            if (j>0):
-                A[j*N + i-1, j*N + i -(N+1)] = 1
-            if (j<N-1):
-                A[j*N + i-1, j*N + i +(N-1)] = 1
+    if (D< 0.5):
+        print("Stability check okey")
+    else:
+        print("WARNING --> unstable for given parameters")
+        return
 
-            if (j == 0):                    #if we are at the bottum of the plate, we need to use ghost nodes
-                A[j*N + i-1, i + (N-1)] = 2
-            
-            if (i == N):
-                A[j*N+ i-1 , j*N + i -2] = 2
-            
-            if ((i == 1)and(j == N-1)):     #if we are at the node next to the top left corner
-                b[j*N + i-1] = -(Tleft + Tright)
-                A[j*N + i-1,j*N + i] = 1
-                A[j*N + i-1,j*N + i-1 - N] = 1
-            elif ((i == 1)and (j == 0 )):
-                b[j*N + i-1] = -Tleft
-                A[j*N + i-1,j*N + i] = 1
-                A[j*N + i-1,j*N + i-1 + N] = 2
-            elif (i == 1):                  #if we are next to the left boundary
-                b[j*N + i-1] = -Tleft
-                A[j*N + i-1,j*N + i] = 1
-                A[j*N + i-1,j*N + i-1 + N] = 1
-                A[j*N + i-1,j*N + i-1 - N] = 1
-            elif ((j == N-1)and(i == N)):
-                b[j*N + i-1] = -Tright            #if we are next to the top boundary
-                A[j*N + i-1,j*N + i-2] = 2
-                A[j*N + i-1,j*N + i-1 -N] = 1
-            elif (j == N-1):
-                b[j*N + i-1] = -Tright 
-                A[j*N + i-1,j*N + i-2] = 1
-                A[j*N + i-1,j*N + i] = 1
-                A[j*N + i-1,j*N + i-1 -N] = 1
-            
-    return A,b
-            
+    T = np.int(endTime/deltaT)  #seting number of iterations
+    X = np.int(L/deltaX + 1)  #seting number of iterations along the beam
+    
+    TempPrev = np.zeros(X, float) #initial condition is that all the temperatures along the beam is zero
+    TempNext = np.zeros(X, float)
+
+    for j in range(0,T):
+        for i in range(0, X):
+            if (i == 0):
+                TempNext[i] = 100   #left boundary condition
+            elif (i == X-1):
+                TempNext[i] = 0     #right boundary condition
+            elif (i == 1):
+                TempNext[i] = D*(TempPrev[i+1] + 100) + (1 - 2*D)*TempPrev[i]
+            elif (i == X-1):
+                TempNext[i] = D*(TempPrev[i-1]) + (1 - 2*D)*TempPrev[i]
+            else :
+                TempNext[i] = D*(TempPrev[i-1] + TempPrev[i+1]) + (1 - 2*D)*TempPrev[i]
+        TempPrev = TempNext
+    
+    return TempNext
+
 #--End-of-function
+
+Temp1 = tempBeam(100, 0, 0, 1, 10**(-5), 0.01, 0.001 )
+Temp2 = tempBeam(100, 0, 0, 1, 10**(-5), 0.01, 0.025 )
+Temp3 = tempBeam(100, 0, 0, 1, 10**(-5), 0.01, 0.4 )
+
+x = np.linspace(0, 1, 101)
+print(np.size(x))
+print(np.size(Temp1))
+
+plt.plot(x, Temp1, label = "t=0.001")
+plt.plot(x, Temp2, label = "t=0.025")
+plt.plot(x, Temp3, label = "t=0.4")
+plt.legend()
+plt.ylabel("Temperature")
+plt.xlabel("x-position")
+plt.grid()
+plt.show()
