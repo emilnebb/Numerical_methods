@@ -50,8 +50,6 @@ Temp2 = tempBeam(100, 0, 0, 1, 10**(-5), 0.01, 0.025 )
 Temp3 = tempBeam(100, 0, 0, 1, 10**(-5), 0.01, 0.4 )
 
 x = np.linspace(0, 1, 101)
-print(np.size(x))
-print(np.size(Temp1))
 
 plt.plot(x, Temp1, label = "t=0.001")
 plt.plot(x, Temp2, label = "t=0.025")
