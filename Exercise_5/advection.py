@@ -3,8 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy as sip
 
-import numpy as np
-from Visualization import createAnimation
+
 
 #Declaring constants
 l = 1
@@ -43,35 +42,25 @@ def nextTimeStepU_numerical(u_prev, x, a, D):
     return u_next
     
 
+time = np.arange(t_start, t_end + delta_t, delta_t)
+
+   
+u_prev = u_analytical(u0,x,a,0) 
+u_Analytical = u_analytical(u0,x,a,0) 
+u_next = np.zeros(np.size(x), float)
+
+for i in range(1,np.size(time)):
+    u_next = nextTimeStepU_numerical(u_prev,x, a, D)
+    u_Analytical = u_analytical(u0,x,a,time[i])
+    u_prev = u_next
 
 
-"""#print (t)
+
+#print (t)
 plt.plot(x, u_analytical(u0,x,a,0.8), label = "analytical")
-plt.plot(x, u, label = "Numerical solution")
+plt.plot(x, u_next, label = "Numerical solution")
 plt.legend()
 plt.ylabel("Deviation")
 plt.xlabel("x-position")
 plt.grid()
-plt.show()"""
-
-
-time = np.arange(t_start, t_end + delta_t, delta_t)
-
-# solution matrices:
-U = np.zeros((len(time), N + 1))   
-U [0,:] = u_analytical(u0,x,a,0) 
-Uanalytic = np.zeros((len(time), N + 1))
-Uanalytic[0, 0] = U[0,0]
-
-for n, t in enumerate(time[1:]):
-        
-        Uold = U[n, :]
-        
-        U[n + 1, :] = nextTimeStepU_numerical(Uold, x, a, D)
-
-        Uanalytic[n + 1, :] = u_analytical(u0,x,a,t) 
-               
-U_Visualization = np.zeros((1, len(time), N + 1))
-U_Visualization[0, :, :] = U
-    
-createAnimation(U_Visualization, Uanalytic, ["FTBS"], x, time, symmetric=False)
+plt.show()
