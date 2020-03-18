@@ -52,8 +52,7 @@ def tempfield(Tleft, Ttop, l, N):
                 b[j*N + i-1] = -Ttop 
                 A[j*N + i-1,j*N + i-2] = 1
                 A[j*N + i-1,j*N + i] = 1
-                A[j*N + i-1,j*N + i-1 -N] = 1
-            
+                A[j*N + i-1,j*N + i-1 -N] = 1    
     return A,b
             
 #--End-of-function

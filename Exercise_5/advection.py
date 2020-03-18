@@ -3,6 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy as sip
 
+import numpy as np
+from Visualization import createAnimation
+
 #Declaring constants
 l = 1
 t_start = 0
@@ -30,25 +33,45 @@ def u0(x):
 def u_analytical(u0,x,a,t):
     return u0(x-a*t)
 
-print (np.size(x))
-#Computing the numerical solution of the advection equation
-        
-u = u_analytical(u0,x,a,0)          #the deviation at initial time, t= 0
-t = t_start + delta_t
-while t < t_end:
+#Computing the numerical solution of the next time step in the advection equation
+
+def nextTimeStepU_numerical(u_prev, x, a, D):
+
     u_next = np.zeros(np.size(x), float)
     for j in range(1,np.size(x)):
-        u_next[j] = u[j] - D*(u[j] - u[j-1])
-    u = u_next
-    t = t + delta_t
+        u_next[j] = u_prev[j] - D*(u_prev[j] - u_prev[j-1])
+    return u_next
+    
 
 
 
-#print (t)
+"""#print (t)
 plt.plot(x, u_analytical(u0,x,a,0.8), label = "analytical")
 plt.plot(x, u, label = "Numerical solution")
 plt.legend()
 plt.ylabel("Deviation")
 plt.xlabel("x-position")
 plt.grid()
-plt.show()
+plt.show()"""
+
+
+time = np.arange(t_start, t_end + delta_t, delta_t)
+
+# solution matrices:
+U = np.zeros((len(time), N + 1))   
+U [0,:] = u_analytical(u0,x,a,0) 
+Uanalytic = np.zeros((len(time), N + 1))
+Uanalytic[0, 0] = U[0,0]
+
+for n, t in enumerate(time[1:]):
+        
+        Uold = U[n, :]
+        
+        U[n + 1, :] = nextTimeStepU_numerical(Uold, x, a, D)
+
+        Uanalytic[n + 1, :] = u_analytical(u0,x,a,t) 
+               
+U_Visualization = np.zeros((1, len(time), N + 1))
+U_Visualization[0, :, :] = U
+    
+createAnimation(U_Visualization, Uanalytic, ["FTBS"], x, time, symmetric=False)
