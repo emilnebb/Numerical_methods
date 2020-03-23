@@ -6,7 +6,7 @@ import scipy as sip
 #Declaring constants
 l = 1
 t_start = 0
-t_end =0.8
+t_end = 0.8
 a_constant = 1
 c = 1
 N = 100
@@ -72,9 +72,9 @@ u_Analytical = u_analytical(u0,x,a_constant,0)
 #Incrementing through the numerical scheeme
 for i in range(1,np.size(time)):
     u_linear1 = nextTimeStep_linear(u_linear0,x, a_constant)
-    #u_linear1[np.size(u_linear1)-1] = u_analytical(u0,x-a_constant*delta_t, a_constant, time[i])    #setting right boundary condition
+    u_linear1[np.size(u_linear1)-1] = u_analytical(u0,x-a_constant*delta_t, a_constant, time[i])[np.size(u_linear1)-1]    #setting right boundary condition
     u_nonlinear1 = nextTimeStep_nonLinear(u_nonlinear0, x, aNonLinear(u_nonlinear0))
-    #u_nonlinear1[np.size(u_nonlinear1)-1] = u_analytical(u0,x-aNonLinear(u_nonlinear0)*delta_t, a_constant, time[i])[]
+    u_nonlinear1[np.size(u_nonlinear1)-1] = u_analytical(u0,x-aNonLinear(u_nonlinear0)*delta_t, a_constant, time[i])[np.size(u_nonlinear1)-1]   #setting right boundary condition
     #u_Analytical = u_analytical(u0,x,a_constant,time[i])
     u_linear0 = u_linear1
     u_nonlinear0 = u_nonlinear1
