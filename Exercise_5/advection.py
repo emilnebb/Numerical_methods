@@ -8,7 +8,7 @@ l = 1
 t_start = 0
 t_end = 0.8
 a_constant = 1
-c = 1
+c = 0.9
 N = 100
 global delta_x
 delta_x = (1/N)
@@ -94,12 +94,12 @@ for i in range(1,np.size(time)):
     u_conservative0 = u_conservative1
 
 #This will plot the result for the last time-step
-plt.plot(x, u_analytical(u0,x,a_constant,0.8), label = "Analytical")
+plt.plot(x, u_analytical(u0,x,a_constant,t_end), label = "Analytical")
 plt.plot(x, u_linear1, linestyle = 'dashed', label = "Numerical linear solution")
 plt.plot(x, u_nonlinear1,linestyle = 'dashed', label = "Numerical non-linear solution")
 plt.plot(x, u_conservative1, linestyle = 'dashed', label = "Numerical conservative solution")
 plt.legend()
-plt.title("Solution at time = %s" % t_end)
+plt.title("Solution at time = %s\n c = %s" % (t_end ,c))
 plt.ylabel("Deviation")
 plt.xlabel("x-position")
 plt.grid()
